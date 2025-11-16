@@ -14,7 +14,6 @@ const QUIZ_QUESTIONS = [
   {
     id: 2,
     text: 'Q2. 看镜子，自己的舌苔属于哪一种？',
-    imagePlaceholders: true,
     options: [
       { text: 'A. 舌苔边缘没有齿痕｜5分', score: 5 },
       { text: 'B. 舌头边上有轻微齿痕｜3分', score: 3 },
@@ -261,20 +260,6 @@ function renderQuestion(main) {
   prompt.textContent = question.text;
 
   card.appendChild(prompt);
-
-  if (question.imagePlaceholders) {
-    const placeholders = document.createElement('div');
-    placeholders.className = 'grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6';
-
-    for (let i = 1; i <= 3; i += 1) {
-      const box = document.createElement('div');
-      box.className = 'aspect-[4/3] rounded-xl border-2 border-dashed border-amber-300 bg-amber-50 flex items-center justify-center text-amber-700 font-medium';
-      box.textContent = `参考图 ${i}`;
-      placeholders.appendChild(box);
-    }
-
-    card.appendChild(placeholders);
-  }
 
   const optionsContainer = document.createElement('div');
   optionsContainer.className = 'space-y-4';
