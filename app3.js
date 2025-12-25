@@ -74,10 +74,49 @@ const DIMENSION_META = {
   },
 };
 
+const ANIMAL_DESCRIPTIONS = {
+  D: {
+    title: '老虎 · 支配型',
+    intro: '这一类人如同老虎一般强势、有力量，特点鲜明且外露，能“打仗”，但掌控欲强。',
+    cues: [
+      '习惯说祈使句，喜欢下指令，表达直接，总想快速进入“说正事”的环节。',
+      '关注他在集体活动中的表现。比如点菜时，果断拿起菜单主导的，多半是老虎型人。',
+      '老虎型人的目标感极强，总是当机立断，因此很容易被识别出来。',
+    ],
+  },
+  I: {
+    title: '孔雀 · 表达型',
+    intro: '孔雀的形象非常适合表现型的人：努力“开屏”、展现自己，高度在意感受。',
+    cues: [
+      '沟通时“自来熟”，与任何陌生人都能快速熟络，常见于对外联络类岗位。',
+      '非常愿意和别人发生肢体接触，把“关系维护”放在第一位，不自觉取悦对方。',
+      '沟通过程中希望对方喜欢自己，情绪感染力强。',
+    ],
+  },
+  C: {
+    title: '猫头鹰 · 精确型',
+    intro: '这一类人处事周全，讲求事实依据，同时给人“聊天兴致不高”的感觉。',
+    cues: [
+      '集体活动中表态慢，但并非走神，而是在细心观察、核对信息。',
+      '偏好数据和逻辑，讲话谨慎克制，注重结论的可靠性。',
+    ],
+  },
+  S: {
+    title: '考拉 · 关心型',
+    intro: '这一类人的特点是缓慢、温和、友好，展露出毫无攻击性的善意。',
+    cues: [
+      '不会主动拉近关系，但持续以温柔的方式回应，给人安全感。',
+      '口头禅常是“随便、我都行、听你们的”，不争不抢，不愿得罪人。',
+      '相较孔雀的主动友好，考拉更偏向被动、稳定的陪伴。',
+    ],
+  },
+};
+
 const state = {
   view: 'start',
   currentIndex: 0,
   answers: [],
+  uploadPreview: null,
 };
 
 const root = document.getElementById('root');
@@ -408,9 +447,128 @@ function renderResult(main) {
   card.appendChild(hero);
   card.appendChild(scoreGrid);
   card.appendChild(tipBox);
+  card.appendChild(renderAnimalDescriptions());
+  card.appendChild(renderUploadSection());
   card.appendChild(actions);
 
   main.appendChild(card);
+}
+
+function renderAnimalDescriptions() {
+  const section = document.createElement('section');
+  section.className = 'mb-6';
+
+  const heading = document.createElement('div');
+  heading.className = 'flex items-center justify-between flex-wrap gap-3 mb-3';
+
+  const title = document.createElement('h4');
+  title.className = 'text-xl font-bold text-amber-900';
+  title.textContent = '动物画像详解';
+
+  const hint = document.createElement('p');
+  hint.className = 'text-sm text-stone-500';
+  hint.textContent = '结合观察线索，帮助你理解自己与他人的行为模式。';
+
+  heading.appendChild(title);
+  heading.appendChild(hint);
+
+  const grid = document.createElement('div');
+  grid.className = 'grid md:grid-cols-2 gap-4';
+
+  ['D', 'I', 'C', 'S'].forEach((key) => {
+    const meta = DIMENSION_META[key];
+    const data = ANIMAL_DESCRIPTIONS[key];
+
+    const card = document.createElement('div');
+    card.className = 'p-5 rounded-xl border border-amber-100 bg-white/80 shadow-sm h-full flex flex-col gap-2';
+
+    const label = document.createElement('p');
+    label.className = 'text-sm font-semibold text-amber-700 uppercase tracking-wide';
+    label.textContent = meta.name;
+
+    const subtitle = document.createElement('p');
+    subtitle.className = 'text-lg font-bold text-stone-900';
+    subtitle.textContent = data.title;
+
+    const intro = document.createElement('p');
+    intro.className = 'text-sm text-stone-700 leading-relaxed';
+    intro.textContent = data.intro;
+
+    const list = document.createElement('ul');
+    list.className = 'list-disc list-inside text-sm text-stone-700 space-y-1';
+
+    data.cues.forEach((item) => {
+      const li = document.createElement('li');
+      li.textContent = item;
+      list.appendChild(li);
+    });
+
+    card.appendChild(label);
+    card.appendChild(subtitle);
+    card.appendChild(intro);
+    card.appendChild(list);
+    grid.appendChild(card);
+  });
+
+  section.appendChild(heading);
+  section.appendChild(grid);
+  return section;
+}
+
+function renderUploadSection() {
+  const section = document.createElement('section');
+  section.className = 'mb-6 p-5 rounded-xl bg-amber-50 border border-amber-200';
+
+  const title = document.createElement('h4');
+  title.className = 'text-lg font-bold text-amber-900 mb-2';
+  title.textContent = '上传你的参考图片';
+
+  const desc = document.createElement('p');
+  desc.className = 'text-sm text-stone-700 leading-relaxed mb-3';
+  desc.textContent = '调研结束后，你可以上传团队或个人的图片作为结论参考，方便对照人格风格画像，进行更直观的回顾。图片仅保存在本地，不会被上传到服务器。';
+
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = 'image/*';
+  input.className = 'block w-full text-sm text-stone-700 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-amber-600 file:text-white hover:file:bg-amber-700 cursor-pointer';
+  input.addEventListener('change', (event) => {
+    const file = event.target.files && event.target.files[0];
+    if (!file) {
+      state.uploadPreview = null;
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      state.uploadPreview = reader.result;
+      render();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  section.appendChild(title);
+  section.appendChild(desc);
+  section.appendChild(input);
+
+  if (state.uploadPreview) {
+    const previewWrapper = document.createElement('div');
+    previewWrapper.className = 'mt-4';
+
+    const previewLabel = document.createElement('p');
+    previewLabel.className = 'text-sm font-semibold text-stone-800 mb-2';
+    previewLabel.textContent = '预览 · 仅你自己可见';
+
+    const previewImage = document.createElement('img');
+    previewImage.src = state.uploadPreview;
+    previewImage.alt = '上传的参考图片预览';
+    previewImage.className = 'w-full max-h-80 object-contain rounded-lg border border-amber-100 shadow-inner bg-white';
+
+    previewWrapper.appendChild(previewLabel);
+    previewWrapper.appendChild(previewImage);
+    section.appendChild(previewWrapper);
+  }
+
+  return section;
 }
 
 function render() {
