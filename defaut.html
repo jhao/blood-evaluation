@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>问卷导览</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        var _hmt = _hmt || [];
+        (function() {
+            var hm = document.createElement("script");
+            hm.src = "https://hm.baidu.com/hm.js?86213e9327b18cf9170d6fd6c5ba57ee";
+            var s = document.getElementsByTagName("script")[0];
+            s.parentNode.insertBefore(hm, s);
+        })();
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        @keyframes fade-in {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .animate-fade-in { animation: fade-in 0.35s ease forwards; }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-b from-amber-50 via-amber-50 to-teal-50 text-stone-800">
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+        <header class="text-center mb-10 sm:mb-14 animate-fade-in">
+            <p class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/70 backdrop-blur text-sm font-semibold text-teal-700 shadow-sm border border-teal-100">
+                <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                多维心理与健康问卷集合
+            </p>
+            <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-teal-900">选择适合你的问卷</h1>
+            <p class="mt-3 text-stone-600 max-w-2xl mx-auto">
+                导览页汇集了全部问卷，风格与正式页面一致。轻触或点击卡片可进入相应问卷，悬停时可预览题目与结果效果，移动端同样友好。
+            </p>
+        </header>
+
+        <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
+            <a href="index.html" class="group relative block bg-white/80 backdrop-blur-sm border border-amber-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.05s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-50 via-amber-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-teal-700">
+                        <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-100">气血状态</span>
+                        <span class="text-teal-500">·</span>
+                        <span>6 维度评估</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">气血状态自测问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">聚焦「眼、面、头、眠、经、温」6 个方面，帮助你初步判断气血盈亏，整体风格清新舒缓。</p>
+                    </div>
+                    <div class="relative h-40 sm:h-36 rounded-xl overflow-hidden border border-amber-100 bg-white shadow-inner">
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                            <div class="text-xs font-semibold text-teal-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">近期是否经常感觉手脚冰凉、怕冷？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-800">从不</span>
+                                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900">偶尔</span>
+                                <span class="px-3 py-1 rounded-full bg-teal-100 text-teal-800">经常</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 bg-gradient-to-b from-amber-50 to-teal-50">
+                            <div class="text-xs font-semibold text-teal-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">倾向轻度气血不足</p>
+                            <p class="text-xs text-stone-600 leading-relaxed">建议关注作息与补气血饮食，保持适度运动并持续观察变化。</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index2.html" class="group relative block bg-white/80 backdrop-blur-sm border border-amber-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.1s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-50 via-amber-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-orange-700">
+                        <span class="px-3 py-1 rounded-full bg-orange-50 border border-orange-100">脾胃健康</span>
+                        <span class="text-orange-500">·</span>
+                        <span>11 题精简版</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">脾胃健康自评问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">根据饮食、作息与消化状态快速筛查脾胃平衡程度，配合温暖色调呈现亲和体验。</p>
+                    </div>
+                    <div class="relative h-40 sm:h-36 rounded-xl overflow-hidden border border-orange-100 bg-white shadow-inner">
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                            <div class="text-xs font-semibold text-orange-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">三餐规律度如何？是否常有腹胀或反酸感？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-orange-50 text-orange-800">很规律</span>
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-800">偶有遗漏</span>
+                                <span class="px-3 py-1 rounded-full bg-orange-100 text-orange-900">常常紊乱</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 bg-gradient-to-b from-orange-50 to-amber-50">
+                            <div class="text-xs font-semibold text-orange-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">脾胃状态偏弱</p>
+                            <p class="text-xs text-stone-600 leading-relaxed">建议保持清淡饮食、少食多餐，并结合睡眠管理与适度运动。</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index3.html" class="group relative block bg-white/85 backdrop-blur-sm border border-emerald-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.15s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-50 via-teal-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">动物人格</span>
+                        <span class="text-emerald-500">·</span>
+                        <span>专业版测评</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">动物人格风格测评</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">通过多维度行为偏好，探索哪一种动物人格与你最贴近，配有沉浸式插画感。</p>
+                    </div>
+                    <div class="relative h-40 sm:h-36 rounded-xl overflow-hidden border border-emerald-100 bg-white shadow-inner">
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                            <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">团队合作时，你更倾向领导节奏还是默默完成分工？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800">主导全局</span>
+                                <span class="px-3 py-1 rounded-full bg-teal-50 text-teal-800">协同推进</span>
+                                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900">独立完成</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 bg-gradient-to-b from-emerald-50 to-teal-50">
+                            <div class="text-xs font-semibold text-emerald-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">更偏向「探索型海豚」</p>
+                            <p class="text-xs text-stone-600 leading-relaxed">善于沟通与创新，适合需要创意碰撞的场景，可继续深挖优势领域。</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index4.html" class="group relative block bg-white/80 backdrop-blur-sm border border-indigo-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.2s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-50 via-sky-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-indigo-700">
+                        <span class="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100">MBTI</span>
+                        <span class="text-indigo-500">·</span>
+                        <span>专业版问卷</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">MBTI 问卷调查</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">经典的 16 型人格评估，加入渐变卡片与柔和阴影，便于快速获取性格画像。</p>
+                    </div>
+                    <div class="relative h-40 sm:h-36 rounded-xl overflow-hidden border border-indigo-100 bg-white shadow-inner">
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 transition-transform duration-500 ease-out group-hover:-translate-y-full">
+                            <div class="text-xs font-semibold text-indigo-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">当计划被打乱时，你会：立即制定新方案、顺其自然，还是先观察再行动？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">马上调整</span>
+                                <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-800">随性适应</span>
+                                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900">先观察</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-3 flex flex-col gap-3 translate-y-full transition-transform duration-500 ease-out group-hover:translate-y-0 bg-gradient-to-b from-indigo-50 to-sky-50">
+                            <div class="text-xs font-semibold text-indigo-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">倾向 ENTP / ENFP 区间</p>
+                            <p class="text-xs text-stone-600 leading-relaxed">善于创意与沟通，适合创新驱动的领域，可结合分差查看主副偏好。</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>
