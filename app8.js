@@ -492,7 +492,19 @@ function renderQuiz(root) {
   root.querySelectorAll('[data-option]').forEach((btn) => {
     btn.addEventListener('click', () => {
       state.answers[state.currentIndex] = btn.getAttribute('data-option');
-      renderQuiz(root);
+      if (state.currentIndex === total - 1) {
+        const unfinished = state.answers.findIndex((ans) => !ans);
+        if (unfinished !== -1) {
+          state.currentIndex = unfinished;
+          render();
+          return;
+        }
+        state.view = 'result';
+        render();
+        return;
+      }
+      state.currentIndex += 1;
+      render();
     });
   });
 
