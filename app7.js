@@ -248,6 +248,17 @@ function renderQuestion(main) {
     button.innerHTML = `<p class="font-semibold">${option.label}</p>`;
     button.onclick = () => {
       state.answers[state.currentIndex] = option.value;
+      const isLast = state.currentIndex === QUESTIONS.length - 1;
+      if (isLast) {
+        const pending = state.answers.findIndex((value) => value == null);
+        if (pending !== -1) {
+          state.currentIndex = pending;
+        } else {
+          state.view = 'result';
+        }
+      } else {
+        state.currentIndex = Math.min(QUESTIONS.length - 1, state.currentIndex + 1);
+      }
       render();
     };
     options.appendChild(button);
