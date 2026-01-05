@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>气血状态自测问卷</title>
+    <title>问卷导览</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         var _hmt = _hmt || [];
         (function() {
             var hm = document.createElement("script");
             hm.src = "https://hm.baidu.com/hm.js?86213e9327b18cf9170d6fd6c5ba57ee";
-            var s = document.getElementsByTagName("script")[0]; 
+            var s = document.getElementsByTagName("script")[0];
             s.parentNode.insertBefore(hm, s);
         })();
     </script>
@@ -21,21 +21,376 @@
         }
 
         @keyframes fade-in {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(16px); }
-            to { opacity: 1; transform: translateY(0); }
+        .animate-fade-in { animation: fade-in 0.35s ease forwards; }
+
+        .preview-panel.flipped [data-face="front"] {
+            transform: translateY(-100%);
         }
 
-        .animate-fade-in { animation: fade-in 0.3s ease forwards; }
-        .animate-fade-in-up { animation: fade-in-up 0.35s ease forwards; }
+        .preview-panel.flipped [data-face="back"] {
+            transform: translateY(0);
+        }
     </style>
 </head>
-<body class="bg-amber-50">
-    <div id="root"></div>
-    <script type="module" src="app.js"></script>
+<body class="min-h-screen bg-gradient-to-b from-amber-50 via-amber-50 to-teal-50 text-stone-800">
+    <div class="max-w-6xl mx-auto px-4 py-8 sm:py-12">
+        <header class="text-center mb-10 sm:mb-14 animate-fade-in">
+            <p class="inline-flex items-center gap-2 px-4 py-1 rounded-full bg-white/70 backdrop-blur text-sm font-semibold text-teal-700 shadow-sm border border-teal-100">
+                <span class="w-2 h-2 rounded-full bg-teal-500"></span>
+                多维心理与健康问卷集合
+            </p>
+            <h1 class="mt-4 text-3xl sm:text-4xl font-bold text-teal-900">选择适合你的问卷</h1>
+            <p class="mt-3 text-stone-600 max-w-2xl mx-auto">
+                导览页汇集了全部问卷，风格与正式页面一致。轻触或点击卡片可进入相应问卷，悬停时可预览题目与结果效果，移动端同样友好。
+            </p>
+        </header>
+
+        <div class="mb-8 sm:mb-10 animate-fade-in">
+            <div class="flex flex-wrap justify-center gap-3" role="tablist" aria-label="问卷分类筛选">
+                <button type="button" data-tab="all" class="px-4 py-2 rounded-full border border-teal-100 bg-white/80 text-teal-800 font-semibold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-teal-300 focus:ring-offset-2" aria-pressed="true" role="tab">全部</button>
+                <button type="button" data-tab="physical" class="px-4 py-2 rounded-full border border-amber-100 bg-white/80 text-amber-800 font-semibold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-amber-300 focus:ring-offset-2" aria-pressed="false" role="tab">身体状况评估</button>
+                <button type="button" data-tab="mental" class="px-4 py-2 rounded-full border border-indigo-100 bg-white/80 text-indigo-800 font-semibold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-indigo-300 focus:ring-offset-2" aria-pressed="false" role="tab">精神状况评估</button>
+                <button type="button" data-tab="personality" class="px-4 py-2 rounded-full border border-emerald-100 bg-white/80 text-emerald-800 font-semibold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-emerald-300 focus:ring-offset-2" aria-pressed="false" role="tab">性格评估</button>
+                <button type="button" data-tab="other" class="px-4 py-2 rounded-full border border-stone-200 bg-white/80 text-stone-800 font-semibold shadow-sm transition hover:-translate-y-0.5 focus:outline-none focus:ring-2 focus:ring-stone-300 focus:ring-offset-2" aria-pressed="false" role="tab">其他</button>
+            </div>
+        </div>
+
+        <div id="card-grid" class="grid gap-6 grid-cols-1 sm:grid-cols-2 xl:grid-cols-4">
+            <a href="index1.html" data-category="physical" class="group relative block bg-white/80 backdrop-blur-sm border border-amber-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.05s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-teal-50 via-amber-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-teal-700">
+                        <span class="px-3 py-1 rounded-full bg-amber-50 border border-amber-100">气血状态</span>
+                        <span class="text-teal-500">·</span>
+                        <span>6 维度评估</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">气血状态自测问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">聚焦「眼、面、头、眠、经、温」6 个方面，帮助你初步判断气血盈亏，整体风格清新舒缓。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-amber-100 bg-white shadow-inner preview-panel" data-preview="card-1">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-teal-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">近期是否经常感觉手脚冰凉、怕冷？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-800">从不</span>
+                                <span class="px-3 py-1 rounded-full bg-amber-100 text-amber-900">偶尔</span>
+                                <span class="px-3 py-1 rounded-full bg-teal-100 text-teal-800">经常</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-amber-50 to-teal-50" data-face="back">
+                            <div class="text-xs font-semibold text-teal-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">倾向轻度气血不足</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">建议关注作息与补气血饮食，保持适度运动并持续观察变化。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-teal-800 bg-teal-50 border border-teal-100 rounded-full shadow-sm" data-flip-button="card-1" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index2.html" data-category="physical" class="group relative block bg-white/80 backdrop-blur-sm border border-amber-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.1s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-orange-50 via-amber-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-orange-700">
+                        <span class="px-3 py-1 rounded-full bg-orange-50 border border-orange-100">脾胃健康</span>
+                        <span class="text-orange-500">·</span>
+                        <span>11 题精简版</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">脾胃健康自评问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">根据饮食、作息与消化状态快速筛查脾胃平衡程度，配合温暖色调呈现亲和体验。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-orange-100 bg-white shadow-inner preview-panel" data-preview="card-2">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-orange-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">三餐规律度如何？是否常有腹胀或反酸感？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-orange-50 text-orange-800">很规律</span>
+                                <span class="px-3 py-1 rounded-full bg-amber-50 text-amber-800">偶有遗漏</span>
+                                <span class="px-3 py-1 rounded-full bg-orange-100 text-orange-900">常常紊乱</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-orange-50 to-amber-50" data-face="back">
+                            <div class="text-xs font-semibold text-orange-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">脾胃状态偏弱</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">建议保持清淡饮食、少食多餐，并结合睡眠管理与适度运动。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-orange-800 bg-orange-50 border border-orange-100 rounded-full shadow-sm" data-flip-button="card-2" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index3.html" data-category="personality" class="group relative block bg-white/85 backdrop-blur-sm border border-emerald-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.15s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-50 via-teal-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-emerald-700">
+                        <span class="px-3 py-1 rounded-full bg-emerald-50 border border-emerald-100">动物人格</span>
+                        <span class="text-emerald-500">·</span>
+                        <span>专业版测评</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">动物人格风格测评</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">通过多维度行为偏好，探索哪一种动物人格与你最贴近，配有沉浸式插画感。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-emerald-100 bg-white shadow-inner preview-panel" data-preview="card-3">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-emerald-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">团队合作时，你更倾向领导节奏还是默默完成分工？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800">主导全局</span>
+                                <span class="px-3 py-1 rounded-full bg-teal-50 text-teal-800">协同推进</span>
+                                <span class="px-3 py-1 rounded-full bg-emerald-100 text-emerald-900">独立完成</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-emerald-50 to-teal-50" data-face="back">
+                            <div class="text-xs font-semibold text-emerald-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">更偏向「探索型海豚」</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">善于沟通与创新，适合需要创意碰撞的场景，可继续深挖优势领域。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-emerald-800 bg-emerald-50 border border-emerald-100 rounded-full shadow-sm" data-flip-button="card-3" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index4.html" data-category="personality" class="group relative block bg-white/80 backdrop-blur-sm border border-indigo-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.2s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-indigo-50 via-sky-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-indigo-700">
+                        <span class="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100">MBTI</span>
+                        <span class="text-indigo-500">·</span>
+                        <span>专业版问卷</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">MBTI 问卷调查</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">经典的 16 型人格评估，加入渐变卡片与柔和阴影，便于快速获取性格画像。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-indigo-100 bg-white shadow-inner preview-panel" data-preview="card-4">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-indigo-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">当计划被打乱时，你会：立即制定新方案、顺其自然，还是先观察再行动？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">马上调整</span>
+                                <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-800">随性适应</span>
+                                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900">先观察</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-indigo-50 to-sky-50" data-face="back">
+                            <div class="text-xs font-semibold text-indigo-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">倾向 ENTP / ENFP 区间</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">善于创意与沟通，适合创新驱动的领域，可结合分差查看主副偏好。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-indigo-800 bg-indigo-50 border border-indigo-100 rounded-full shadow-sm" data-flip-button="card-4" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index5.html" data-category="mental" class="group relative block bg-white/80 backdrop-blur-sm border border-indigo-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.25s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-sky-50 via-indigo-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-indigo-700">
+                        <span class="px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100">情商（EI）</span>
+                        <span class="text-indigo-500">·</span>
+                        <span>40 题专业版</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">情商测评问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">融合能力模型、Bar-On 与 Goleman 胜任力框架，涵盖感知、运用、理解、管理四大维度，评估更全面。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-indigo-100 bg-white shadow-inner preview-panel" data-preview="card-5">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-indigo-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">在压力场景中，你能否先抓住问题本身，而不是只被情绪推着走？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">非常不同意</span>
+                                <span class="px-3 py-1 rounded-full bg-sky-50 text-sky-800">不确定</span>
+                                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900">非常同意</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-sky-50 to-indigo-50" data-face="back">
+                            <div class="text-xs font-semibold text-indigo-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">情绪管理维度 80+</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">表现为稳定的情绪调节与沟通修复能力，可进一步针对弱项制定练习计划。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-indigo-800 bg-indigo-50 border border-indigo-100 rounded-full shadow-sm" data-flip-button="card-5" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index6.html" data-category="personality" class="group relative block bg-white/80 backdrop-blur-sm border border-violet-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.3s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-50 via-indigo-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-violet-700">
+                        <span class="px-3 py-1 rounded-full bg-violet-50 border border-violet-100">EPQ</span>
+                        <span class="text-violet-500">·</span>
+                        <span>艾森克人格四维</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">艾森克人格模型（EPQ）评估</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">包含精神质（P）、内外向（E）、神经质（N）与掩饰性（L）四个维度，快速获取人格画像与风险提示。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-violet-100 bg-white shadow-inner preview-panel" data-preview="card-6">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-violet-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">在陌生场合中，你会主动开启话题，还是更愿意安静观察？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-violet-50 text-violet-800">主动互动</span>
+                                <span class="px-3 py-1 rounded-full bg-indigo-50 text-indigo-800">视情况</span>
+                                <span class="px-3 py-1 rounded-full bg-violet-100 text-violet-900">安静观察</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-violet-50 to-indigo-50" data-face="back">
+                            <div class="text-xs font-semibold text-violet-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">外向性较高，情绪稳定</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">倾向积极外向、情绪稳健，可结合掩饰性分值评估回答真诚度，辅助职业与沟通策略。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-violet-800 bg-violet-50 border border-violet-100 rounded-full shadow-sm" data-flip-button="card-6" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index7.html" data-category="mental" class="group relative block bg-white/80 backdrop-blur-sm border border-slate-200 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.35s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-slate-50 via-blue-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-indigo-700">
+                        <span class="px-3 py-1 rounded-full bg-blue-50 border border-blue-100">抑郁筛查</span>
+                        <span class="text-indigo-500">·</span>
+                        <span>36 题严重程度量表</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">DRS-36 抑郁筛查与严重程度量表</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">覆盖核心症状、功能损害与高危信号，含一致性校验与风险提醒，答题与反馈风格与正式页面保持一致。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-blue-100 bg-white shadow-inner preview-panel" data-preview="card-7">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-indigo-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">过去两周，我很难对日常小事产生愉快感。</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-slate-50 text-slate-800">从未/几乎没有</span>
+                                <span class="px-3 py-1 rounded-full bg-blue-50 text-blue-800">偶尔</span>
+                                <span class="px-3 py-1 rounded-full bg-indigo-100 text-indigo-900">几乎每天</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-slate-50 to-blue-50" data-face="back">
+                            <div class="text-xs font-semibold text-indigo-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">中度风险，总分 42</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">提示情绪低落与动力下降，关注核心分与风险分，并结合睡眠/饮食管理及求助渠道。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-indigo-800 bg-blue-50 border border-blue-100 rounded-full shadow-sm" data-flip-button="card-7" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+
+            <a href="index8.html" data-category="personality" class="group relative block bg-white/80 backdrop-blur-sm border border-fuchsia-100 rounded-2xl p-5 shadow-lg transition duration-300 hover:-translate-y-1 hover:shadow-2xl animate-fade-in" style="animation-delay: 0.4s; animation-fill-mode: backwards;">
+                <div class="absolute inset-0 rounded-2xl bg-gradient-to-br from-violet-50 via-rose-50 to-white opacity-70 pointer-events-none"></div>
+                <div class="relative flex flex-col gap-4">
+                    <div class="flex items-center gap-2 text-sm font-semibold text-fuchsia-700">
+                        <span class="px-3 py-1 rounded-full bg-fuchsia-50 border border-fuchsia-100">星座倾向</span>
+                        <span class="text-fuchsia-500">·</span>
+                        <span>性格映射测评</span>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-stone-900 mb-2">性格推断星座问卷</h2>
+                        <p class="text-sm text-stone-600 leading-relaxed">通过日常偏好、表达方式与情绪节奏，推测更贴近你的星座原型，并提供社交与自我认知提示。</p>
+                    </div>
+                    <div class="relative h-52 sm:h-44 rounded-xl overflow-hidden border border-fuchsia-100 bg-white shadow-inner preview-panel" data-preview="card-8">
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 transition-transform duration-500 ease-out translate-y-0 sm:group-hover:-translate-y-full" data-face="front">
+                            <div class="text-xs font-semibold text-fuchsia-700 uppercase tracking-wide">题目示例</div>
+                            <p class="text-sm text-stone-800 font-medium leading-relaxed">聊天时你更常以幽默破冰、直接表达，还是先聆听对方的节奏？</p>
+                            <div class="flex flex-wrap gap-2 text-xs">
+                                <span class="px-3 py-1 rounded-full bg-fuchsia-50 text-fuchsia-800">幽默破冰</span>
+                                <span class="px-3 py-1 rounded-full bg-violet-50 text-violet-800">直接表达</span>
+                                <span class="px-3 py-1 rounded-full bg-rose-50 text-rose-800">先聆听</span>
+                            </div>
+                        </div>
+                        <div class="absolute inset-0 px-4 py-4 flex flex-col gap-4 translate-y-full transition-transform duration-500 ease-out sm:group-hover:translate-y-0 bg-gradient-to-b from-violet-50 to-rose-50" data-face="back">
+                            <div class="text-xs font-semibold text-fuchsia-800 uppercase tracking-wide">结果示例</div>
+                            <p class="text-sm text-stone-800 font-semibold">更贴近火象星座气质</p>
+                            <p class="text-sm text-stone-600 leading-relaxed">展现热情外向、喜欢主动的互动风格，可关注匹配的沟通方式与合作节奏建议。</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end sm:hidden">
+                        <button type="button" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-semibold text-fuchsia-800 bg-fuchsia-50 border border-fuchsia-100 rounded-full shadow-sm" data-flip-button="card-8" aria-label="翻转查看卡片详情" aria-pressed="false">翻转查看</button>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div id="empty-state" class="hidden mt-8 text-center text-stone-600 text-sm">
+            当前分类暂无卡片，试试切换其他筛选。
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tabButtons = document.querySelectorAll('[data-tab]');
+            const cards = document.querySelectorAll('[data-category]');
+            const emptyState = document.getElementById('empty-state');
+
+            const setActiveTab = (target) => {
+                tabButtons.forEach((btn) => {
+                    const isActive = btn.dataset.tab === target;
+                    btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+                    btn.classList.toggle('bg-teal-600', isActive);
+                    btn.classList.toggle('text-white', isActive);
+                    btn.classList.toggle('shadow-lg', isActive);
+                    btn.classList.toggle('border-teal-600/70', isActive);
+                });
+            };
+
+            const filterCards = (category) => {
+                let hasVisible = false;
+                cards.forEach((card) => {
+                    const show = category === 'all' || card.dataset.category === category;
+                    card.classList.toggle('hidden', !show);
+                    if (show) hasVisible = true;
+                });
+                if (emptyState) {
+                    emptyState.classList.toggle('hidden', hasVisible);
+                }
+            };
+
+            tabButtons.forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const target = btn.dataset.tab;
+                    setActiveTab(target);
+                    filterCards(target);
+                });
+            });
+
+            setActiveTab('all');
+            filterCards('all');
+
+            const flipButtons = document.querySelectorAll('[data-flip-button]');
+            flipButtons.forEach((btn) => {
+                const targetId = btn.dataset.flipButton;
+                const panel = document.querySelector(`[data-preview="${targetId}"]`);
+                if (!panel) return;
+                btn.addEventListener('click', (event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    const flipped = panel.classList.toggle('flipped');
+                    btn.setAttribute('aria-pressed', flipped ? 'true' : 'false');
+                });
+            });
+        });
+    </script>
 </body>
 </html>
