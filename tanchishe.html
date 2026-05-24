@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>贪吃蛇 · Snake</title>
+  <style>
+    /* ===== CSS Reset & Variables ===== */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-primary:    #0d1117;
+      --bg-secondary:  #161b22;
+      --bg-card:       #1c2128;
+      --border-color:  #30363d;
+      --text-primary:  #e6edf3;
+      --text-secondary:#8b949e;
+      --accent-green:  #3fb950;
+      --accent-blue:   #58a6ff;
+      --accent-orange: #f78166;
+      --accent-purple: #bc8cff;
+      --accent-yellow: #e3b341;
+      --shadow-glow:   0 0 20px rgba(63, 185, 80, 0.3);
+      --radius-md:     10px;
+      --radius-lg:     16px;
+      --font-main:     'Segoe UI', system-ui, -apple-system, sans-serif;
+      --font-mono:     'Fira Code', 'Cascadia Code', monospace;
+    }
+
+    html, body {
+      width: 100%; height: 100%;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-family: var(--font-main);
+      overflow: hidden;
+    }
+
+    /* ===== Layout ===== */
+    #app {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      padding: 12px 8px;
+      gap: 12px;
+    }
+
+    /* ===== Header Bar ===== */
+    #header {
+      width: 100%;
+      max-width: 520px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .score-group {
+      display: flex;
+      gap: 8px;
+    }
+
+    .score-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 6px 14px;
+      text-align: center;
+      min-width: 80px;
+    }
+
+    .score-label {
+      font-size: 10px;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    .score-value {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--accent-green);
+      line-height: 1.2;
+    }
+
+    .score-box.best .score-value { color: var(--accent-yellow); }
+
+    /* Difficulty selector */
+    #difficulty-wrap {
+      display: flex;
+      gap: 4px;
+    }
+
+    .diff-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 5px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      white-space: nowrap;
+    }
+
+    .diff-btn:hover { border-color: var(--accent-blue); color: var(--accent-blue); }
+    .diff-btn.active {
+      background: var(--accent-green);
+      border-color: var(--accent-green);
+      color: #000;
+    }
+
+    /* ===== Canvas Wrapper ===== */
+    #canvas-wrap {
+      position: relative;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      box-shadow: 0 0 0 1px var(--border-color), var(--shadow-glow);
+    }
+
+    #gameCanvas {
+      display: block;
+      background: var(--bg-secondary);
+    }
+
+    /* ===== Overlay (start / pause / gameover) ===== */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: rgba(13, 17, 23, 0.88);
+      backdrop-filter: blur(6px);
+      border-radius: var(--radius-lg);
+      transition: opacity 0.3s;
+    }
+
+    .overlay.hidden { opacity: 0; pointer-events: none; }
+
+    .overlay-title {
+      font-size: clamp(28px, 6vw, 44px);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      text-align: center;
+    }
+
+    .overlay-title .snake-icon { font-size: 1.2em; }
+
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .overlay-subtitle {
+      color: var(--text-secondary);
+      font-size: 13px;
+      text-align: center;
+      max-width: 260px;
+      line-height: 1.6;
+    }
+
+    .overlay-score-display {
+      text-align: center;
+    }
+
+    .overlay-score-display .big-score {
+      font-family: var(--font-mono);
+      font-size: clamp(42px, 10vw, 64px);
+      font-weight: 700;
+      color: var(--accent-green);
+      line-height: 1;
+    }
+
+    .overlay-score-display .score-note {
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-top: 4px;
+    }
+
+    .overlay-score-display .new-record {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent-yellow), var(--accent-orange));
+      color: #000;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 6px;
+    }
+
+    /* Hint grid */
+    .hint-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 20px;
+      color: var(--text-secondary);
+      font-size: 12px;
+    }
+
+    .hint-grid span { display: flex; align-items: center; gap: 6px; }
+
+    .key-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 5px;
+      min-width: 22px;
+      color: var(--text-primary);
+    }
+
+    /* Buttons */
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-green), #2ea043);
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 15px;
+      font-weight: 700;
+      padding: 12px 36px;
+      cursor: pointer;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 16px rgba(63,185,80,0.35);
+      transition: transform 0.1s, box-shadow 0.1s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(63,185,80,0.45);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    /* ===== Mobile Controls ===== */
+    #mobile-controls {
+      display: none;
+      width: 100%;
+      max-width: 200px;
+      gap: 4px;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .dpad-row {
+      display: flex;
+      gap: 4px;
+    }
+
+    .dpad-btn {
+      width: 52px;
+      height: 52px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      color: var(--text-primary);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      transition: background 0.1s, transform 0.1s;
+      touch-action: manipulation;
+    }
+
+    .dpad-btn:active {
+      background: var(--accent-green);
+      color: #000;
+      transform: scale(0.92);
+    }
+
+    /* ===== Combo Toast ===== */
+    #combo-toast {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      background: linear-gradient(135deg, var(--accent-orange), var(--accent-yellow));
+      color: #000;
+      font-weight: 800;
+      font-size: 22px;
+      padding: 8px 20px;
+      border-radius: 30px;
+      pointer-events: none;
+      opacity: 0;
+      transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+      white-space: nowrap;
+      z-index: 20;
+    }
+
+    #combo-toast.show {
+      opacity: 1;
+      transform: translate(-50%, -60%) scale(1);
+    }
+
+    /* ===== Pause indicator ===== */
+    #pause-bar {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(28, 33, 40, 0.92);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 14px;
+      letter-spacing: 0.04em;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.2s;
+      z-index: 15;
+    }
+
+    #pause-bar.visible { opacity: 1; }
+
+    /* ===== Responsive ===== */
+    @media (max-width: 540px) {
+      #header { flex-wrap: wrap; justify-content: center; }
+      #difficulty-wrap { order: 3; width: 100%; justify-content: center; }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      #mobile-controls { display: flex; }
+    }
+
+    /* Animate pulse for food */
+    @keyframes pulse-ring {
+      0%   { transform: scale(0.9); opacity: 0.8; }
+      50%  { transform: scale(1.1); opacity: 1; }
+      100% { transform: scale(0.9); opacity: 0.8; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- Header -->
+  <header id="header">
+    <div class="score-group">
+      <div class="score-box">
+        <div class="score-label">分数</div>
+        <div class="score-value" id="score-display">0</div>
+      </div>
+      <div class="score-box best">
+        <div class="score-label">最高</div>
+        <div class="score-value" id="best-display">0</div>
+      </div>
+    </div>
+    <div id="difficulty-wrap">
+      <button class="diff-btn active" data-diff="easy">简单</button>
+      <button class="diff-btn" data-diff="normal">普通</button>
+      <button class="diff-btn" data-diff="hard">困难</button>
+    </div>
+  </header>
+
+  <!-- Canvas + Overlays -->
+  <div id="canvas-wrap">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- Combo toast -->
+    <div id="combo-toast">🔥 COMBO ×2</div>
+
+    <!-- Pause bar -->
+    <div id="pause-bar">⏸ 已暂停 — 按空格继续</div>
+
+    <!-- Start Overlay -->
+    <div class="overlay" id="overlay-start">
+      <div class="overlay-title"><span class="snake-icon">🐍</span> <span class="gradient-text">贪吃蛇</span></div>
+      <div class="overlay-subtitle">经典玩法，现代体验<br/>吃得越多，跑得越快</div>
+      <div class="hint-grid">
+        <span><span class="key-badge">↑↓←→</span> 移动方向</span>
+        <span><span class="key-badge">WASD</span> 移动方向</span>
+        <span><span class="key-badge">Space</span> 暂停/继续</span>
+        <span><span class="key-badge">👆</span> 触摸滑动</span>
+      </div>
+      <button class="btn-primary" id="btn-start">开始游戏</button>
+    </div>
+
+    <!-- Game Over Overlay -->
+    <div class="overlay hidden" id="overlay-gameover">
+      <div class="overlay-title" style="color:var(--accent-orange)">游戏结束</div>
+      <div class="overlay-score-display">
+        <div class="big-score" id="final-score">0</div>
+        <div class="score-note">本局得分</div>
+        <div class="new-record hidden" id="new-record-badge">🏆 新纪录！</div>
+      </div>
+      <button class="btn-primary" id="btn-restart">再来一局</button>
+    </div>
+
+    <!-- Pause Overlay -->
+    <div class="overlay hidden" id="overlay-pause">
+      <div class="overlay-title" style="font-size:36px">⏸ 已暂停</div>
+      <div class="overlay-subtitle">按空格键继续游戏</div>
+      <button class="btn-primary" id="btn-resume">继续游戏</button>
+    </div>
+  </div>
+
+  <!-- Mobile D-pad -->
+  <div id="mobile-controls">
+    <div class="dpad-row">
+      <button class="dpad-btn" id="dpad-up">↑</button>
+    </div>
+    <div class="dpad-row">
+      <button class="dpad-btn" id="dpad-left">←</button>
+      <button class="dpad-btn" id="dpad-down">↓</button>
+      <button class="dpad-btn" id="dpad-right">→</button>
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+/* =====================================================================
+ * CONSTANTS
+ * ===================================================================== */
+
+/** Grid dimensions (number of cells). */
+const GRID_COLS = 20;
+const GRID_ROWS = 20;
+
+/** Cell size in pixels (overridden by responsive sizing). */
+let CELL_SIZE = 24;
+
+/** Snake speed per difficulty (ms per frame). */
+const SPEEDS = {
+  easy:   180,
+  normal: 120,
+  hard:   70,
+};
+
+/** Score per food item. */
+const BASE_SCORE = 10;
+
+/** Combo window: if next food eaten within this many ms, combo multiplier applies. */
+const COMBO_WINDOW_MS = 3000;
+
+/** Particle settings. */
+const PARTICLE_COUNT = 14;
+const PARTICLE_LIFE  = 40; // frames
+
+/** Color palette for snake gradient (head → tail). */
+const SNAKE_HEAD_COLOR = '#3fb950';
+const SNAKE_TAIL_COLOR = '#1a4d2e';
+
+/** Possible food colors. */
+const FOOD_COLORS = ['#f78166', '#58a6ff', '#bc8cff', '#e3b341', '#79c0ff', '#ffb347', '#ff6eb4'];
+
+/** localStorage key for best score. */
+const LS_BEST_KEY = 'snake_best_score';
+
+/** Direction vectors. */
+const DIR = {
+  UP:    { x: 0,  y: -1 },
+  DOWN:  { x: 0,  y:  1 },
+  LEFT:  { x: -1, y:  0 },
+  RIGHT: { x: 1,  y:  0 },
+};
+
+/** Opposite directions (to prevent 180-degree reversal). */
+const OPPOSITE = {
+  UP: 'DOWN', DOWN: 'UP', LEFT: 'RIGHT', RIGHT: 'LEFT',
+};
+
+
+/* =====================================================================
+ * UTILITIES
+ * ===================================================================== */
+
+/**
+ * Returns a random integer in [min, max).
+ * @param {number} min
+ * @param {number} max
+ * @returns {number}
+ */
+function randInt(min, max) {
+  return Math.floor(Math.random() * (max - min)) + min;
+}
+
+/**
+ * Linearly interpolates between two hex colours.
+ * @param {string} hexA  - Start colour (#rrggbb).
+ * @param {string} hexB  - End colour (#rrggbb).
+ * @param {number} t     - Mix factor [0..1].
+ * @returns {string} Interpolated hex colour.
+ */
+function lerpColor(hexA, hexB, t) {
+  const parse = (h) => [
+    parseInt(h.slice(1, 3), 16),
+    parseInt(h.slice(3, 5), 16),
+    parseInt(h.slice(5, 7), 16),
+  ];
+  const [r1, g1, b1] = parse(hexA);
+  const [r2, g2, b2] = parse(hexB);
+  const r = Math.round(r1 + (r2 - r1) * t);
+  const g = Math.round(g1 + (g2 - g1) * t);
+  const b = Math.round(b1 + (b2 - b1) * t);
+  return `#${r.toString(16).padStart(2,'0')}${g.toString(16).padStart(2,'0')}${b.toString(16).padStart(2,'0')}`;
+}
+
+/**
+ * Clamps a number between min and max.
+ * @param {number} v
+ * @param {number} lo
+ * @param {number} hi
+ * @returns {number}
+ */
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+
+/* =====================================================================
+ * PARTICLE  (single particle for explosion effect)
+ * ===================================================================== */
+
+class Particle {
+  /**
+   * @param {number} x      - Canvas pixel X origin.
+   * @param {number} y      - Canvas pixel Y origin.
+   * @param {string} color  - Base colour.
+   */
+  constructor(x, y, color) {
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 1.5 + Math.random() * 3;
+    this.x      = x;
+    this.y      = y;
+    this.vx     = Math.cos(angle) * speed;
+    this.vy     = Math.sin(angle) * speed;
+    this.color  = color;
+    this.life   = PARTICLE_LIFE;
+    this.maxLife= PARTICLE_LIFE;
+    this.radius = 2 + Math.random() * 3;
+  }
+
+  /** Updates position and decrements life. */
+  update() {
+    this.x   += this.vx;
+    this.y   += this.vy;
+    this.vy  += 0.12; // gravity
+    this.vx  *= 0.96;
+    this.life -= 1;
+  }
+
+  /**
+   * Draws this particle on the given context.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  draw(ctx) {
+    const alpha = this.life / this.maxLife;
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius * alpha, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  /** @returns {boolean} Whether the particle is still alive. */
+  isAlive() { return this.life > 0; }
+}
+
+
+/* =====================================================================
+ * FOOD
+ * ===================================================================== */
+
+class Food {
+  /**
+   * @param {number} x     - Grid column.
+   * @param {number} y     - Grid row.
+   */
+  constructor(x, y) {
+    this.x      = x;
+    this.y      = y;
+    this.color  = FOOD_COLORS[randInt(0, FOOD_COLORS.length)];
+    this.phase  = Math.random() * Math.PI * 2; // pulse animation offset
+    this.born   = performance.now();
+  }
+
+  /**
+   * Draws the food item.
+   * @param {CanvasRenderingContext2D} ctx
+   */
+  draw(ctx) {
+    const now    = performance.now();
+    const t      = (now - this.born) / 600; // pulse cycle
+    const scale  = 0.55 + 0.1 * Math.sin(t * Math.PI * 2 + this.phase);
+    const cx     = (this.x + 0.5) * CELL_SIZE;
+    const cy     = (this.y + 0.5) * CELL_SIZE;
+    const r      = CELL_SIZE * scale;
+
+    // Glow
+    ctx.save();
+    ctx.shadowColor = this.color;
+    ctx.shadowBlur  = 10;
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 2, 0, Math.PI * 2);
+    ctx.fillStyle = this.color + '33';
+    ctx.fill();
+
+    // Inner circle
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.fillStyle = this.color;
+    ctx.fill();
+
+    // Shine spot
+    ctx.beginPath();
+    ctx.arc(cx - r * 0.28, cy - r * 0.28, r * 0.28, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(255,255,255,0.45)';
+    ctx.fill();
+
+    ctx.restore();
+  }
+}
+
+
+/* =====================================================================
+ * GAME STATE
+ * ===================================================================== */
+
+class GameState {
+  constructor() {
+    /** @type {'idle'|'running'|'paused'|'gameover'} */
+    this.phase          = 'idle';
+    this.score          = 0;
+    this.bestScore      = parseInt(localStorage.getItem(LS_BEST_KEY) || '0', 10);
+    this.difficulty     = 'easy';
+
+    /** @type {{x:number, y:number}[]} Snake body segments, head is [0]. */
+    this.snake          = [];
+    /** @type {string} Current direction key (UP/DOWN/LEFT/RIGHT). */
+    this.direction      = 'RIGHT';
+    /** @type {string|null} Buffered next direction. */
+    this.nextDirection  = null;
+    /** @type {Food|null} */
+    this.food           = null;
+
+    // Combo tracking
+    this.lastEatTime    = 0;
+    this.comboCount     = 0;
+
+    // Death animation state
+    this.deathAnimFrame = 0;
+    this.deathAnimTotal = 35;
+    this.isDeathAnim    = false;
+
+    /** @type {Particle[]} */
+    this.particles      = [];
+  }
+
+  /** Returns the speed (ms/tick) for current difficulty. */
+  get speed() { return SPEEDS[this.difficulty]; }
+
+  /** Returns true if the game is actively running (not paused/idle/over). */
+  get isRunning() { return this.phase === 'running'; }
+
+  /**
+   * Initialises/resets the snake for a new game.
+   */
+  reset() {
+    this.score         = 0;
+    this.direction     = 'RIGHT';
+    this.nextDirection = null;
+    this.comboCount    = 0;
+    this.lastEatTime   = 0;
+    this.particles     = [];
+    this.isDeathAnim   = false;
+    this.deathAnimFrame= 0;
+
+    // Start snake at centre, length 3
+    const startX = Math.floor(GRID_COLS / 2);
+    const startY = Math.floor(GRID_ROWS / 2);
+    this.snake = [
+      { x: startX,     y: startY },
+      { x: startX - 1, y: startY },
+      { x: startX - 2, y: startY },
+    ];
+
+    this.placeFood();
+    this.phase = 'running';
+  }
+
+  /**
+   * Places a new food item at a random cell not occupied by the snake.
+   */
+  placeFood() {
+    const occupied = new Set(this.snake.map(s => `${s.x},${s.y}`));
+    let x, y;
+    let attempts = 0;
+    do {
+      x = randInt(0, GRID_COLS);
+      y = randInt(0, GRID_ROWS);
+      attempts++;
+      if (attempts > GRID_COLS * GRID_ROWS) break; // fallback safety
+    } while (occupied.has(`${x},${y}`));
+    this.food = new Food(x, y);
+  }
+
+  /**
+   * Advances the snake by one tick.
+   * @returns {'ok'|'ate'|'dead'} Result of this tick.
+   */
+  tick() {
+    if (!this.isRunning) return 'ok';
+
+    // Apply buffered direction
+    if (this.nextDirection && this.nextDirection !== OPPOSITE[this.direction]) {
+      this.direction = this.nextDirection;
+    }
+    this.nextDirection = null;
+
+    const head = this.snake[0];
+    const d    = DIR[this.direction];
+    const next = { x: head.x + d.x, y: head.y + d.y };
+
+    // Wall collision
+    if (next.x < 0 || next.x >= GRID_COLS || next.y < 0 || next.y >= GRID_ROWS) {
+      return 'dead';
+    }
+
+    // Self collision (skip tail tip since it will move away)
+    const body = this.snake.slice(0, -1);
+    if (body.some(s => s.x === next.x && s.y === next.y)) {
+      return 'dead';
+    }
+
+    // Move: prepend new head
+    this.snake.unshift(next);
+
+    // Check food
+    if (this.food && next.x === this.food.x && next.y === this.food.y) {
+      this._handleEat();
+      return 'ate';
+    } else {
+      // Remove tail to keep length
+      this.snake.pop();
+      return 'ok';
+    }
+  }
+
+  /**
+   * Handles eating a food item: scoring, combo, particle spawn, new food.
+   * @private
+   */
+  _handleEat() {
+    const now    = performance.now();
+    const delta  = now - this.lastEatTime;
+    this.lastEatTime = now;
+
+    // Combo logic
+    if (delta < COMBO_WINDOW_MS && this.lastEatTime !== 0) {
+      this.comboCount = Math.min(this.comboCount + 1, 8);
+    } else {
+      this.comboCount = 1;
+    }
+
+    const multiplier = this.comboCount;
+    const earned     = BASE_SCORE * multiplier;
+    this.score      += earned;
+
+    // Update best
+    if (this.score > this.bestScore) {
+      this.bestScore = this.score;
+      localStorage.setItem(LS_BEST_KEY, String(this.bestScore));
+    }
+
+    // Spawn particles at food position
+    const px = (this.food.x + 0.5) * CELL_SIZE;
+    const py = (this.food.y + 0.5) * CELL_SIZE;
+    for (let i = 0; i < PARTICLE_COUNT; i++) {
+      this.particles.push(new Particle(px, py, this.food.color));
+    }
+
+    this.placeFood();
+    return { earned, multiplier };
+  }
+
+  /**
+   * Triggers the death animation sequence.
+   */
+  startDeathAnimation() {
+    this.isDeathAnim   = true;
+    this.deathAnimFrame= 0;
+    this.phase         = 'gameover';
+  }
+
+  /**
+   * Queues a direction change (validated against reversal).
+   * @param {string} dir - Direction key (UP/DOWN/LEFT/RIGHT).
+   */
+  queueDirection(dir) {
+    if (this.isRunning && dir !== OPPOSITE[this.direction]) {
+      this.nextDirection = dir;
+    }
+  }
+
+  /** Toggles pause state. */
+  togglePause() {
+    if (this.phase === 'running') {
+      this.phase = 'paused';
+    } else if (this.phase === 'paused') {
+      this.phase = 'running';
+    }
+  }
+}
+
+
+/* =====================================================================
+ * RENDERER
+ * ===================================================================== */
+
+class Renderer {
+  /**
+   * @param {HTMLCanvasElement} canvas
+   */
+  constructor(canvas) {
+    this.canvas = canvas;
+    this.ctx    = canvas.getContext('2d');
+  }
+
+  /**
+   * Resizes the canvas and CELL_SIZE based on available screen space.
+   */
+  resize() {
+    const maxW = Math.min(window.innerWidth - 16, 520);
+    const maxH = window.innerHeight - 180;
+    const cs   = Math.floor(Math.min(maxW / GRID_COLS, maxH / GRID_ROWS));
+    CELL_SIZE           = Math.max(cs, 14); // floor at 14px
+    this.canvas.width   = CELL_SIZE * GRID_COLS;
+    this.canvas.height  = CELL_SIZE * GRID_ROWS;
+  }
+
+  /** Clears the canvas. */
+  clear() {
+    const { ctx, canvas } = this;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  /**
+   * Draws the checkerboard background grid.
+   */
+  drawGrid() {
+    const { ctx } = this;
+    for (let row = 0; row < GRID_ROWS; row++) {
+      for (let col = 0; col < GRID_COLS; col++) {
+        const even  = (row + col) % 2 === 0;
+        ctx.fillStyle = even ? '#161b22' : '#1a1f28';
+        ctx.fillRect(col * CELL_SIZE, row * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+      }
+    }
+  }
+
+  /**
+   * Draws the snake with head-to-tail gradient.
+   * @param {{x:number, y:number}[]} snake
+   * @param {boolean} isDead     - If true, flash the snake red for death anim.
+   * @param {number}  deathFrame - Current frame of death animation.
+   */
+  drawSnake(snake, isDead, deathFrame) {
+    const { ctx } = this;
+    const len = snake.length;
+
+    snake.forEach((seg, i) => {
+      const t     = len > 1 ? i / (len - 1) : 0;
+      let   color = lerpColor(SNAKE_HEAD_COLOR, SNAKE_TAIL_COLOR, t);
+
+      // Death flash: alternate red
+      if (isDead) {
+        const flashOn = (deathFrame % 6) < 3;
+        color = flashOn ? '#f78166' : '#4a1010';
+      }
+
+      const x   = seg.x * CELL_SIZE;
+      const y   = seg.y * CELL_SIZE;
+      const pad = 1.5;
+      const r   = Math.max(3, CELL_SIZE / 5);
+
+      ctx.save();
+      ctx.shadowColor = i === 0 && !isDead ? SNAKE_HEAD_COLOR : 'transparent';
+      ctx.shadowBlur  = i === 0 ? 8 : 0;
+      this._roundRect(x + pad, y + pad, CELL_SIZE - pad * 2, CELL_SIZE - pad * 2, r, color);
+      ctx.restore();
+
+      // Eyes on head
+      if (i === 0 && !isDead) {
+        this._drawEyes(seg);
+      }
+    });
+  }
+
+  /**
+   * Draws small eyes on the snake head.
+   * @param {{x:number, y:number}} head
+   * @private
+   */
+  _drawEyes(head) {
+    const { ctx } = this;
+    const cx    = head.x * CELL_SIZE + CELL_SIZE / 2;
+    const cy    = head.y * CELL_SIZE + CELL_SIZE / 2;
+    const r     = Math.max(2, CELL_SIZE / 8);
+    const offX  = CELL_SIZE / 5;
+    const offY  = CELL_SIZE / 5;
+
+    [[cx - offX, cy - offY], [cx + offX, cy - offY]].forEach(([ex, ey]) => {
+      ctx.beginPath();
+      ctx.arc(ex, ey, r, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(ex + 0.5, ey + 0.5, r * 0.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#000';
+      ctx.fill();
+    });
+  }
+
+  /**
+   * Draws a filled rounded rectangle.
+   * @param {number} x
+   * @param {number} y
+   * @param {number} w
+   * @param {number} h
+   * @param {number} radius
+   * @param {string} color
+   * @private
+   */
+  _roundRect(x, y, w, h, radius, color) {
+    const { ctx } = this;
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + w - radius, y);
+    ctx.arcTo(x + w, y, x + w, y + radius, radius);
+    ctx.lineTo(x + w, y + h - radius);
+    ctx.arcTo(x + w, y + h, x + w - radius, y + h, radius);
+    ctx.lineTo(x + radius, y + h);
+    ctx.arcTo(x, y + h, x, y + h - radius, radius);
+    ctx.lineTo(x, y + radius);
+    ctx.arcTo(x, y, x + radius, y, radius);
+    ctx.closePath();
+    ctx.fillStyle = color;
+    ctx.fill();
+  }
+
+  /**
+   * Draws all alive particles.
+   * @param {Particle[]} particles
+   */
+  drawParticles(particles) {
+    particles.forEach(p => p.draw(this.ctx));
+  }
+
+  /**
+   * Full render pass for the running/paused state.
+   * @param {GameState} state
+   */
+  render(state) {
+    this.clear();
+    this.drawGrid();
+
+    if (state.food) {
+      state.food.draw(this.ctx);
+    }
+
+    this.drawSnake(
+      state.snake,
+      state.isDeathAnim,
+      state.deathAnimFrame
+    );
+
+    this.drawParticles(state.particles);
+  }
+}
+
+
+/* =====================================================================
+ * INPUT HANDLER
+ * ===================================================================== */
+
+class InputHandler {
+  /**
+   * @param {GameState}  state
+   * @param {GameEngine} engine  - Reference to engine for pause/start.
+   */
+  constructor(state, engine) {
+    this.state    = state;
+    this.engine   = engine;
+    this._touchX  = null;
+    this._touchY  = null;
+
+    this._bindKeyboard();
+    this._bindTouch();
+    this._bindDpad();
+  }
+
+  /** @private */
+  _bindKeyboard() {
+    document.addEventListener('keydown', (e) => {
+      switch (e.key) {
+        case 'ArrowUp':    case 'w': case 'W':
+          e.preventDefault();
+          this.state.queueDirection('UP');
+          break;
+        case 'ArrowDown':  case 's': case 'S':
+          e.preventDefault();
+          this.state.queueDirection('DOWN');
+          break;
+        case 'ArrowLeft':  case 'a': case 'A':
+          e.preventDefault();
+          this.state.queueDirection('LEFT');
+          break;
+        case 'ArrowRight': case 'd': case 'D':
+          e.preventDefault();
+          this.state.queueDirection('RIGHT');
+          break;
+        case ' ':
+          e.preventDefault();
+          this.engine.handlePause();
+          break;
+      }
+    });
+  }
+
+  /** @private */
+  _bindTouch() {
+    const canvas = document.getElementById('gameCanvas');
+
+    canvas.addEventListener('touchstart', (e) => {
+      e.preventDefault();
+      const t = e.touches[0];
+      this._touchX = t.clientX;
+      this._touchY = t.clientY;
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      e.preventDefault();
+      if (this._touchX === null) return;
+      const t  = e.changedTouches[0];
+      const dx = t.clientX - this._touchX;
+      const dy = t.clientY - this._touchY;
+
+      if (Math.abs(dx) < 10 && Math.abs(dy) < 10) return; // tap, ignore
+
+      if (Math.abs(dx) > Math.abs(dy)) {
+        this.state.queueDirection(dx > 0 ? 'RIGHT' : 'LEFT');
+      } else {
+        this.state.queueDirection(dy > 0 ? 'DOWN' : 'UP');
+      }
+      this._touchX = null;
+      this._touchY = null;
+    }, { passive: false });
+  }
+
+  /** @private */
+  _bindDpad() {
+    const map = {
+      'dpad-up':    'UP',
+      'dpad-down':  'DOWN',
+      'dpad-left':  'LEFT',
+      'dpad-right': 'RIGHT',
+    };
+    Object.entries(map).forEach(([id, dir]) => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        this.state.queueDirection(dir);
+      }, { passive: false });
+      el.addEventListener('mousedown', () => {
+        this.state.queueDirection(dir);
+      });
+    });
+  }
+}
+
+
+/* =====================================================================
+ * COMBO UI
+ * ===================================================================== */
+
+class ComboUI {
+  constructor() {
+    this.toast    = document.getElementById('combo-toast');
+    this._timer   = null;
+  }
+
+  /**
+   * Shows a combo multiplier toast.
+   * @param {number} multiplier
+   */
+  show(multiplier) {
+    if (multiplier < 2) return;
+    clearTimeout(this._timer);
+    this.toast.textContent = `🔥 COMBO ×${multiplier}`;
+    this.toast.classList.add('show');
+    this._timer = setTimeout(() => this.toast.classList.remove('show'), 900);
+  }
+}
+
+
+/* =====================================================================
+ * GAME ENGINE  (orchestrates everything)
+ * ===================================================================== */
+
+class GameEngine {
+  constructor() {
+    const canvas      = document.getElementById('gameCanvas');
+    this.state        = new GameState();
+    this.renderer     = new Renderer(canvas);
+    this.inputHandler = new InputHandler(this.state, this);
+    this.comboUI      = new ComboUI();
+
+    // UI element references
+    this.scoreDisplay = document.getElementById('score-display');
+    this.bestDisplay  = document.getElementById('best-display');
+    this.overlayStart = document.getElementById('overlay-start');
+    this.overlayOver  = document.getElementById('overlay-gameover');
+    this.overlayPause = document.getElementById('overlay-pause');
+    this.finalScore   = document.getElementById('final-score');
+    this.newRecordBadge= document.getElementById('new-record-badge');
+    this.pauseBar     = document.getElementById('pause-bar');
+
+    // Timing
+    this._lastTick    = 0;
+    this._rafId       = null;
+
+    // Prev score for combo detection
+    this._prevScore   = 0;
+    this._prevCombo   = 1;
+
+    this._init();
+  }
+
+  /** Wires up buttons and starts the render loop. */
+  _init() {
+    // Resize canvas
+    this.renderer.resize();
+    window.addEventListener('resize', () => {
+      this.renderer.resize();
+    });
+
+    // Difficulty buttons
+    document.querySelectorAll('.diff-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (this.state.phase === 'running') return; // lock during game
+        document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        this.state.difficulty = btn.dataset.diff;
+      });
+    });
+
+    // Start button
+    document.getElementById('btn-start').addEventListener('click', () => {
+      this._startGame();
+    });
+
+    // Restart button
+    document.getElementById('btn-restart').addEventListener('click', () => {
+      this._startGame();
+    });
+
+    // Resume button
+    document.getElementById('btn-resume').addEventListener('click', () => {
+      this.handlePause();
+    });
+
+    // Update best display
+    this.bestDisplay.textContent = String(this.state.bestScore);
+
+    // Start RAF loop
+    this._rafId = requestAnimationFrame(this._loop.bind(this));
+  }
+
+  /** Starts a new game. */
+  _startGame() {
+    this._prevScore = 0;
+    this._prevCombo = 1;
+    this.state.reset();
+
+    // Hide all overlays
+    this.overlayStart.classList.add('hidden');
+    this.overlayOver.classList.add('hidden');
+    this.overlayPause.classList.add('hidden');
+    this.pauseBar.classList.remove('visible');
+
+    this._lastTick = performance.now();
+  }
+
+  /**
+   * Handles pause/resume toggling.
+   * Public so InputHandler can call it.
+   */
+  handlePause() {
+    if (this.state.phase === 'idle' || this.state.phase === 'gameover') return;
+    this.state.togglePause();
+
+    if (this.state.phase === 'paused') {
+      this.overlayPause.classList.remove('hidden');
+      this.pauseBar.classList.add('visible');
+    } else {
+      this.overlayPause.classList.add('hidden');
+      this.pauseBar.classList.remove('visible');
+      this._lastTick = performance.now(); // reset tick timer after resuming
+    }
+  }
+
+  /**
+   * Main requestAnimationFrame loop.
+   * @param {number} now - DOMHighResTimeStamp
+   * @private
+   */
+  _loop(now) {
+    this._rafId = requestAnimationFrame(this._loop.bind(this));
+
+    const { state } = this;
+
+    // Always render (for food pulsing etc.)
+    if (state.phase !== 'idle') {
+      this.renderer.render(state);
+    }
+
+    // Update particles
+    state.particles = state.particles.filter(p => {
+      p.update();
+      return p.isAlive();
+    });
+
+    // Death animation
+    if (state.isDeathAnim) {
+      state.deathAnimFrame++;
+      if (state.deathAnimFrame >= state.deathAnimTotal) {
+        this._showGameOver();
+      }
+      return;
+    }
+
+    // Game tick
+    if (state.phase === 'running') {
+      const elapsed = now - this._lastTick;
+      if (elapsed >= state.speed) {
+        this._lastTick = now;
+        const result = state.tick();
+
+        if (result === 'dead') {
+          state.startDeathAnimation();
+        } else if (result === 'ate') {
+          // Detect combo
+          if (state.comboCount > this._prevCombo || state.comboCount >= 2) {
+            this.comboUI.show(state.comboCount);
+          }
+          this._prevCombo = state.comboCount;
+        }
+
+        // Update score UI
+        this.scoreDisplay.textContent = String(state.score);
+        this.bestDisplay.textContent  = String(state.bestScore);
+      }
+    }
+  }
+
+  /**
+   * Shows the game-over overlay with final score and new-record badge.
+   * @private
+   */
+  _showGameOver() {
+    const isNew = this.state.score >= this.state.bestScore && this.state.score > 0;
+    this.finalScore.textContent = String(this.state.score);
+
+    if (isNew && this.state.score > 0) {
+      this.newRecordBadge.classList.remove('hidden');
+    } else {
+      this.newRecordBadge.classList.add('hidden');
+    }
+
+    this.overlayOver.classList.remove('hidden');
+  }
+}
+
+
+/* =====================================================================
+ * BOOT
+ * ===================================================================== */
+
+document.addEventListener('DOMContentLoaded', () => {
+  try {
+    new GameEngine();
+  } catch (err) {
+    console.error('[Snake] Fatal initialisation error:', err);
+  }
+});
+</script>
+</body>
+</html>
